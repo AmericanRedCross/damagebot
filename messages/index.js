@@ -4,12 +4,15 @@ For a complete walkthrough of creating this type of bot see the article at
 https://aka.ms/abs-node-waterfall
 -----------------------------------------------------------------------------*/
 "use strict";
+
+//local env testing
+require('dotenv-extended').load();
+
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
 
 var locationDialog = require('botbuilder-location');
-bot.library(locationDialog.createLibrary(process.env['BingKey']);
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 
@@ -22,6 +25,7 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 
 var bot = new builder.UniversalBot(connector);
 bot.localePath(path.join(__dirname, './locale'));
+bot.library(locationDialog.createLibrary(process.env['BingKey']));
 
 
 bot.dialog('/', [

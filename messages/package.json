@@ -1,12 +1,13 @@
 {
-  "name": "waterfallbot",
-  "version": "1.0.0",
+  "name": "damagebot",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "dependencies": {
     "botbuilder": "^3.7.0",
     "botbuilder-azure": "3.0.2",
-    "botbuilder-location": "^2.0.0"
+    "botbuilder-location": "^2.0.0",
+    "dotenv-extended": "^2.0.1"
   },
   "devDependencies": {
     "restify": "^4.3.0"
