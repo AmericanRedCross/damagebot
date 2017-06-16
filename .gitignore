@@ -1,0 +1,7 @@
+# System files
+.project
+.DS_Store
+
+# Local
+node_modules
+npm-debug.log
