@@ -1,7 +1,5 @@
 /*-----------------------------------------------------------------------------
-This template demonstrates how to use Waterfalls to collect input from a user using a sequence of steps.
-For a complete walkthrough of creating this type of bot see the article at
-https://aka.ms/abs-node-waterfall
+Waterfall Damage Bot
 -----------------------------------------------------------------------------*/
 "use strict";
 
@@ -36,7 +34,7 @@ bot.dialog('/', [
     function (session, results) {
         session.userData.name = results.response;
         locationDialog.getLocation(session, {
-          prompt: "What is your location",
+          prompt: "What is your location?",
           useNativeControl: true,
           reverseGeocode: true,
 			           skipFavorites: true,
@@ -103,6 +101,7 @@ function createCard(session) {
         //     builder.CardAction.openUrl(session, 'https://azure.microsoft.com/en-us/pricing/', 'More Information')
         //         .image('https://raw.githubusercontent.com/amido/azure-vector-icons/master/renders/microsoft-azure.png')
         // ]);
+        session.endDialog();
 }
 
 function getDateTime() {
