@@ -1,0 +1,213 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "0.5",
+    "body": [
+		{
+			"type": "ColumnSet",
+			"separation": "strong",
+			"columns": [
+				{
+					"type": "Column",
+					"size": "1",
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "Damage Report",
+							"weight": "bolder",
+							"size": "large",
+							"isSubtle": false
+						},
+						{
+							"type": "TextBlock",
+							"text": "Dedeya, Irrawaddy"
+						},
+						{
+							"type": "TextBlock",
+							"text": "Flood - January 1, 2015"
+						}
+					]
+				},
+				{
+					"type": "Column",
+					"size": "auto",
+					"items": [
+						{
+							"type": "Image",
+							"url": "http://upload.wikimedia.org/wikipedia/commons/0/05/Myanmar_Red_Cross_Society_logo.png",
+							"size": "medium"
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "ColumnSet",
+			"separation": "strong",
+			"columns": [
+				{
+					"type": "Column",
+					"size": "1",
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "Injuries",
+							"weight": "bolder",
+							"size": "medium",
+							"isSubtle": false
+						},
+						{
+							"type": "FactSet",
+							"facts": [
+								{
+									"title": "Male Injuries",
+									"value": "1,000"
+								},
+								{
+									"title": "Female Injuries",
+									"value": "500"
+								},
+								{
+									"title": "Total Injuries",
+									"value": "1,500"
+								}
+							]
+						}
+					]
+				},
+				{
+					"type": "Column",
+					"size": "1",
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "Deaths",
+							"weight": "bolder",
+							"size": "medium",
+							"isSubtle": false
+						},
+						{
+							"type": "FactSet",
+							"facts": [
+								{
+									"title": "Male Deaths",
+									"value": "1,000"
+								},
+								{
+									"title": "Female Deaths",
+									"value": "500"
+								},
+								{
+									"title": "Total Deaths",
+									"value": "1,500"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "ColumnSet",
+			"separation": "strong",
+			"columns": [
+				{
+					"type": "Column",
+					"size": "1",
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "Affected Population",
+							"weight": "bolder",
+							"size": "medium",
+							"isSubtle": false
+						},
+						{
+							"type": "FactSet",
+							"facts": [
+								{
+									"title": "Women",
+									"value": "1,000"
+								},
+								{
+									"title": "Men",
+									"value": "1,000"
+								},
+								{
+									"title": "Children ",
+									"value": "45"
+								},
+								{
+									"title": "Elderly",
+									"value": "10,000"
+								},
+								{
+									"title": "Disabled",
+									"value": "5,000"
+								},
+								{
+									"title": "Total Affected",
+									"value": "45,000"
+								}
+							]
+						}
+					]
+				},
+				{
+					"type": "Column",
+					"size": "1",
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "Houses Damage",
+							"weight": "bolder",
+							"size": "medium",
+							"isSubtle": false
+						},
+						{
+							"type": "FactSet",
+							"facts": [
+								{
+									"title": "Partially Destroyed",
+									"value": "1,000"
+								},
+								{
+									"title": "Totally Destroyed",
+									"value": "500"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "ColumnSet",
+			"separation": "strong",
+			"columns": [
+				{
+					"type": "Column",
+					"size": 3,
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "If you have any questions contact [INSERT NAME] @ 123.456.7890",
+							"weight": "bolder",
+							"size": "normal",
+							"wrap": "true"
+						}
+					]
+				}
+			]
+		}
+	],
+    "actions": [
+        {
+            "type": "Action.Submit",
+            "title": "Confirm and Submit",
+            "data": {
+                "x" : 13
+            }
+        }
+    ]
+}

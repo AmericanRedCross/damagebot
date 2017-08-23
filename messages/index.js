@@ -109,7 +109,7 @@ bot.dialog('/', [
             ]);
         var msg = new builder.Message(session).attachments([card]);
         session.send(msg);
-        session.send("ဟလို, I'm the Myanmar Red Cross Reborting Bot. I can show you everything you can use our Bot Builder SDK to do on Facebook.");
+        session.send("ဟလို, I'm the Myanmar Red Cross Reborting Bot. I can report data for initial damage assessments and distributions.");
         session.beginDialog('/help');
     },
     function (session, results) {
@@ -124,7 +124,7 @@ bot.dialog('/', [
 
 bot.dialog('/menu', [
     function (session) {
-        builder.Prompts.choice(session, "What would you like to do?", "sitrep|distribution|picture|list|(quit)");
+        builder.Prompts.choice(session, "What would you like to do?", "sitrep|distribution|picture|list|carousel|(quit)");
     },
     function (session, results) {
         if (results.response && results.response.entity != '(quit)') {
@@ -186,30 +186,44 @@ bot.dialog('/sitrep', [
       builder.Prompts.choice(session, "What are the major needs", ["Food", "Shelter", "Water", "Medicine", "Other"]);
   },
   function (session, results) {
-      session.userData.needs = results.response.entity;
-      console.log('creating card');
+    session.userData.needs = results.response.entity;
+    console.log(session.userData);
+    var msg = new builder.Message(session)
+        .attachments([
+            new builder.ReceiptCard(session)
+                .title("Damage Report")
+                .items([
+                  builder.ReceiptItem.create(session, '100', 'People Affected')
+                    .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_affected_population_64px_icon.png')),
+                  builder.ReceiptItem.create(session, '45', 'Injured')
+                    .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_injured_64px_icon.png')),
+                  builder.ReceiptItem.create(session, '23', 'Deceased')
+                    .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_dead_64px_icon.png'))
+                ])
+                .facts([
+                  builder.Fact.create(session, getDateTime()),
+                  builder.Fact.create(session, place.locality + ', ' + place.region),
+                  builder.Fact.create(session, session.userData.disastertype.entity)
+                ])
+        ]);
+    console.log(msg);
 
-      // create the card based on selection
-      var card = new builder.ReceiptCard(session)
-          .title('Quick Assessment')
-          .facts([
-              builder.Fact.create(session, getDateTime()),
-              // builder.Fact.create(session, place.locality + ', ' + place.region)
-              // builder.Fact.create(session, disastertype)
-          ])
-          .items([
-              builder.ReceiptItem.create(session, session.userData.pplaffected, 'People Affected')
-                  .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_affected_population_64px_icon.png')),
-              builder.ReceiptItem.create(session, session.userData.pplinjured, 'Injured')
-                  .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_injured_64px_icon.png')),
-              builder.ReceiptItem.create(session, session.userData.ppldead, 'Deceased')
-                  .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_dead_64px_icon.png'))
-          ]);
+    session.send(msg);
 
-      // attach the card to the reply message
-      var msg = new builder.Message(session).attachments([card]);
 
-      session.endDialog(msg);
+    // .facts([
+    //     builder.Fact.create(session, getDateTime()),
+    //     // builder.Fact.create(session, place.locality + ', ' + place.region)
+    //     // builder.Fact.create(session, disastertype)
+    // ])
+    // .items([
+    //     builder.ReceiptItem.create(session, session.userData.pplaffected, 'People Affected')
+    //         .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_affected_population_64px_icon.png')),
+    //     builder.ReceiptItem.create(session, session.userData.pplinjured, 'Injured')
+    //         .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_injured_64px_icon.png')),
+    //     builder.ReceiptItem.create(session, session.userData.ppldead, 'Deceased')
+    //         .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_dead_64px_icon.png'))
+    // ]);
   }
 ]);
 
@@ -221,7 +235,7 @@ bot.dialog('/picture', [
                 contentType: "image/jpeg",
                 contentUrl: "http://www.theoldrobots.com/images62/Bender-18.JPG"
             }]);
-        session.endDialog(msg);
+        session.send(msg);
     }
 ]);
 
@@ -255,73 +269,6 @@ bot.dialog('/cards', [
     }
 ]);
 
-bot.dialog('/carousel', [
-    function (session) {
-        session.send("You can pass a custom message to Prompts.choice() that will present the user with a carousel of cards to select from. Each card can even support multiple actions.");
-
-        // Ask the user to select an item from a carousel.
-        var msg = new builder.Message(session)
-            .attachmentLayout(builder.AttachmentLayout.carousel)
-            .attachments([
-                new builder.HeroCard(session)
-                    .title("Space Needle")
-                    .subtitle("The Space Needle is an observation tower in Seattle, Washington, a landmark of the Pacific Northwest, and an icon of Seattle.")
-                    .images([
-                        builder.CardImage.create(session, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Seattlenighttimequeenanne.jpg/320px-Seattlenighttimequeenanne.jpg")
-                            .tap(builder.CardAction.showImage(session, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Seattlenighttimequeenanne.jpg/800px-Seattlenighttimequeenanne.jpg")),
-                    ])
-                    .buttons([
-                        builder.CardAction.openUrl(session, "https://en.wikipedia.org/wiki/Space_Needle", "Wikipedia"),
-                        builder.CardAction.imBack(session, "select:100", "Select")
-                    ]),
-                new builder.HeroCard(session)
-                    .title("Pikes Place Market")
-                    .subtitle("Pike Place Market is a public market overlooking the Elliott Bay waterfront in Seattle, Washington, United States.")
-                    .images([
-                        builder.CardImage.create(session, "https://upload.wikimedia.org/wikipedia/en/thumb/2/2a/PikePlaceMarket.jpg/320px-PikePlaceMarket.jpg")
-                            .tap(builder.CardAction.showImage(session, "https://upload.wikimedia.org/wikipedia/en/thumb/2/2a/PikePlaceMarket.jpg/800px-PikePlaceMarket.jpg")),
-                    ])
-                    .buttons([
-                        builder.CardAction.openUrl(session, "https://en.wikipedia.org/wiki/Pike_Place_Market", "Wikipedia"),
-                        builder.CardAction.imBack(session, "select:101", "Select")
-                    ]),
-                new builder.HeroCard(session)
-                    .title("EMP Museum")
-                    .subtitle("EMP Musem is a leading-edge nonprofit museum, dedicated to the ideas and risk-taking that fuel contemporary popular culture.")
-                    .images([
-                        builder.CardImage.create(session, "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Night_Exterior_EMP.jpg/320px-Night_Exterior_EMP.jpg")
-                            .tap(builder.CardAction.showImage(session, "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Night_Exterior_EMP.jpg/800px-Night_Exterior_EMP.jpg"))
-                    ])
-                    .buttons([
-                        builder.CardAction.openUrl(session, "https://en.wikipedia.org/wiki/EMP_Museum", "Wikipedia"),
-                        builder.CardAction.imBack(session, "select:102", "Select")
-                    ])
-            ]);
-        builder.Prompts.choice(session, msg, "select:100|select:101|select:102");
-    },
-    function (session, results) {
-        var action, item;
-        var kvPair = results.response.entity.split(':');
-        switch (kvPair[0]) {
-            case 'select':
-                action = 'selected';
-                break;
-        }
-        switch (kvPair[1]) {
-            case '100':
-                item = "the Space Needle";
-                break;
-            case '101':
-                item = "Pikes Place Market";
-                break;
-            case '102':
-                item = "the EMP Museum";
-                break;
-        }
-        session.endDialog('You %s "%s"', action, item);
-    }
-]);
-
 bot.dialog('/receipt', [
     function (session) {
         session.send("You can send a receipts for facebook using Bot Builders ReceiptCard...");
@@ -340,118 +287,9 @@ bot.dialog('/receipt', [
                     .tax("$4.40")
                     .total("$48.40")
             ]);
-        session.send(msg);
-
-        session.send("Or using facebooks native attachment schema...");
-        msg = new builder.Message(session)
-            .sourceEvent({
-                facebook: {
-                    attachment: {
-                        type: "template",
-                        payload: {
-                            template_type: "receipt",
-                            recipient_name: "Stephane Crozatier",
-                            order_number: "12345678902",
-                            currency: "USD",
-                            payment_method: "Visa 2345",
-                            order_url: "http://petersapparel.parseapp.com/order?order_id=123456",
-                            timestamp: "1428444852",
-                            elements: [
-                                {
-                                    title: "Classic White T-Shirt",
-                                    subtitle: "100% Soft and Luxurious Cotton",
-                                    quantity: 2,
-                                    price: 50,
-                                    currency: "USD",
-                                    image_url: "http://petersapparel.parseapp.com/img/whiteshirt.png"
-                                },
-                                {
-                                    title: "Classic Gray T-Shirt",
-                                    subtitle: "100% Soft and Luxurious Cotton",
-                                    quantity: 1,
-                                    price: 25,
-                                    currency: "USD",
-                                    image_url: "http://petersapparel.parseapp.com/img/grayshirt.png"
-                                }
-                            ],
-                            address: {
-                                street_1: "1 Hacker Way",
-                                street_2: "",
-                                city: "Menlo Park",
-                                postal_code: "94025",
-                                state: "CA",
-                                country: "US"
-                            },
-                            summary: {
-                                subtotal: 75.00,
-                                shipping_cost: 4.95,
-                                total_tax: 6.19,
-                                total_cost: 56.14
-                            },
-                            adjustments: [
-                                { name: "New Customer Discount", amount: 20 },
-                                { name: "$10 Off Coupon", amount: 10 }
-                            ]
-                        }
-                    }
-                }
-            });
         session.endDialog(msg);
     }
 ]);
-
-bot.dialog('/actions', [
-    function (session) {
-        session.send("Bots can register global actions, like the 'help' & 'goodbye' actions, that can respond to user input at any time. You can even bind actions to buttons on a card.");
-
-        var msg = new builder.Message(session)
-            .attachments([
-                new builder.HeroCard(session)
-                    .title("Space Needle")
-                    .subtitle("The Space Needle is an observation tower in Seattle, Washington, a landmark of the Pacific Northwest, and an icon of Seattle.")
-                    .images([
-                        builder.CardImage.create(session, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Seattlenighttimequeenanne.jpg/320px-Seattlenighttimequeenanne.jpg")
-                    ])
-                    .buttons([
-                        builder.CardAction.dialogAction(session, "weather", "Seattle, WA", "Current Weather")
-                    ])
-            ]);
-        session.send(msg);
-
-        session.endDialog("The 'Current Weather' button on the card above can be pressed at any time regardless of where the user is in the conversation with the bot. The bot can even show the weather after the conversation has ended.");
-    }
-]);
-
-// Create a dialog and bind it to a global action
-bot.dialog('/weather', [
-    function (session, args) {
-        session.endDialog("The weather in %s is 71 degrees and raining.", args.data);
-    }
-]);
-bot.beginDialogAction('weather', '/weather');   // <-- no 'matches' option means this can only be triggered by a button.
-
-function damageCard(session) {
-    return new builder.ReceiptCard(session)
-        .title('Quick Assessment')
-        .facts([
-            builder.Fact.create(session, getDateTime()),
-            // builder.Fact.create(session, place.locality + ', ' + place.region)
-            // builder.Fact.create(session, disastertype)
-        ])
-        .items([
-            builder.ReceiptItem.create(session, session.userData.pplaffected, 'People Affected')
-                .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_affected_population_64px_icon.png')),
-            builder.ReceiptItem.create(session, session.userData.pplinjured, 'Injured')
-                .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_injured_64px_icon.png')),
-            builder.ReceiptItem.create(session, session.userData.ppldead, 'Deceased')
-                .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_dead_64px_icon.png'))
-        ]);
-        // TODO make a link to the dashboard
-        // .buttons([
-        //     builder.CardAction.openUrl(session, 'https://azure.microsoft.com/en-us/pricing/', 'More Information')
-        //         .image('https://raw.githubusercontent.com/amido/azure-vector-icons/master/renders/microsoft-azure.png')
-        // ]);
-}
 
 function getDateTime() {
 
@@ -478,6 +316,25 @@ function getDateTime() {
 
 }
 
-function locationPicker() {
-
-};
+function damageCard(session) {
+    return new builder.ReceiptCard(session)
+        .title('Damage Report')
+        .facts([
+            builder.Fact.create(session, getDateTime()),
+            // builder.Fact.create(session, place.locality + ', ' + place.region)
+            // builder.Fact.create(session, disastertype)
+        ])
+        .items([
+            builder.ReceiptItem.create(session, session.userData.pplaffected, 'People Affected')
+                .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_affected_population_64px_icon.png')),
+            builder.ReceiptItem.create(session, session.userData.pplinjured, 'Injured')
+                .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_injured_64px_icon.png')),
+            builder.ReceiptItem.create(session, session.userData.ppldead, 'Deceased')
+                .image(builder.CardImage.create(session, 'http://mw1.google.com/crisisresponse/icons/un-ocha/people_dead_64px_icon.png'))
+        ]);
+        // TODO make a link to the dashboard
+        // .buttons([
+        //     builder.CardAction.openUrl(session, 'https://azure.microsoft.com/en-us/pricing/', 'More Information')
+        //         .image('https://raw.githubusercontent.com/amido/azure-vector-icons/master/renders/microsoft-azure.png')
+        // ]);
+}
